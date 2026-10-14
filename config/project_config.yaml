@@ -15,9 +15,34 @@ paths:
   database: data/processed/valuation.duckdb
   figures: reports/figures
 
+sources:
+  # Downloaded by: python -m valuation_monitor.download  (EPC is manual; see data/README.md)
+  price_paid:
+    # HM Land Registry's official download host (HTTP only). 2020 is included for prior-year baseline features.
+    base_url: http://prod1.publicdata.landregistry.gov.uk.s3-website-eu-west-1.amazonaws.com
+    years: [2020, 2021, 2022, 2023, 2024, 2025, 2026]
+    monthly_update_file: pp-monthly-update-new-version.csv
+  house_price_index:
+    # Latest edition at setup (published Sep 2026, covers to Jul 2026). Update the month when refreshing.
+    url: https://publicdata.landregistry.gov.uk/market-trend-data/house-price-index-data/UK-HPI-full-file-2026-07.csv
+    filename: UK-HPI-full-file-2026-07.csv
+  postcode_lookup:
+    # ONS: Postcode to OA (2021) to LSOA to MSOA to LAD with Classifications (August 2026) Best Fit Lookup in the UK
+    url: https://www.arcgis.com/sharing/rest/content/items/bb61aafc3f0346e79f621c32fb2559d5/data
+    filename: NSPCL_AUG26_UK_LU.zip
+  boundaries:
+    local_authority:
+      # ONS Local Authority Districts (May 2026) Boundaries UK BGC
+      url: https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_May_2026_Boundaries_UK_BGC/FeatureServer/0
+      filename: lad_may2026_uk_bgc.geojson
+    msoa:
+      # ONS Middle layer Super Output Areas (December 2021) Boundaries EW BGC (V3)
+      url: https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V3/FeatureServer/0
+      filename: msoa_dec2021_ew_bgc.geojson
+
 study_area:
-  # A contrasting mix of markets (decision D-008). Codes are PROVISIONAL until checked
-  # against the ONS lookup on download. All seven had unchanged boundaries from 2021.
+  # A contrasting mix of markets (decision D-008). Codes verified against ONS
+  # Local Authority Districts (May 2026) on 2026-10-14.
   local_authorities:
     - { code: E08000003, name: Manchester, market: city centre and inner city }
     - { code: E08000009, name: Trafford, market: affluent suburb }
