@@ -1,0 +1,24 @@
+# Python 3.12 is recommended: wheels for CatBoost, LightGBM and SHAP can lag behind newer Python releases.
+# Install into a virtual environment:  py -3.12 -m venv .venv  then  .venv\Scripts\pip install -r requirements.txt
+
+# Data loading and SQL
+duckdb
+pandas
+pyarrow
+pyyaml
+rapidfuzz
+
+# Modelling, intervals and explanations
+scikit-learn
+lightgbm
+catboost
+mapie
+shap
+
+# Dashboard and charts
+streamlit
+plotly
+matplotlib
+
+# Testing
+pytest

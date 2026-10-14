@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+.pytest_cache/
+*.egg-info/
+
+# Data: never commit downloaded or derived data (licence and personal-data terms).
+# Folders are kept through their .gitkeep files; data/README.md is committed.
+data/**
+!data/**/
+!data/**/.gitkeep
+!data/README.md
+*.duckdb
+*.duckdb.wal
+
+# Trained models and local artefacts
+models/
+
+# Secrets and local settings
+.env
+
+# Editors and operating system
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Power BI: exported tables and local caches stay local; .pbix files embed data, so use the .pbip project format
+dashboards/power_bi/data/**
+!dashboards/power_bi/data/.gitkeep
+**/.pbi/cache.abf
+**/.pbi/localSettings.json
+*.pbix
+
+# Local working notes for AI assistants (mention account details; not for the public repository)
+CLAUDE.md

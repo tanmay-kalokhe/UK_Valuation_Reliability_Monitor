@@ -1,0 +1,50 @@
+# Central settings for the UK Valuation Reliability Monitor.
+# Values marked PROVISIONAL are confirmed during the build and recorded in docs/decision_log.md.
+
+project:
+  name: UK Valuation Reliability Monitor
+  package: valuation_monitor
+
+paths:
+  raw_price_paid: data/raw/price_paid
+  raw_epc: data/raw/epc
+  raw_house_price_index: data/raw/house_price_index
+  raw_geography: data/raw/geography
+  interim: data/interim
+  processed: data/processed
+  database: data/processed/valuation.duckdb
+  figures: reports/figures
+
+study_area:
+  # Initial scope: 5 to 10 local authorities in England and Wales (PROVISIONAL list, chosen in Week 1).
+  local_authorities: []
+  start_date: "2021-01-01"
+  end_date: null  # null means the latest available release
+
+price_paid:
+  # Category A = standard price paid. Category B (repossessions, identifiable buy-to-lets,
+  # transfers to non-private individuals) is excluded.
+  keep_categories: ["A"]
+
+epc:
+  # Use the most recent certificate lodged on or before the sale date, to avoid leaking post-sale information.
+  match_rule: latest_before_sale
+
+modelling:
+  target: log_price
+  baseline: district_median_indexed_by_hpi
+  candidates: [lightgbm, catboost]
+  random_seed: 42
+
+intervals:
+  method: conformalised_quantile_regression  # alternatives: split_conformal, mondrian_conformal
+  target_coverage: 0.90
+
+validation:
+  time_split: rolling_origin_monthly
+  geographic_holdout_unit: local_authority
+
+monitoring:
+  min_sales_per_area_month: 30   # PROVISIONAL
+  coverage_alert_below: 0.85     # PROVISIONAL
+  error_increase_alert: 0.20     # PROVISIONAL: relative rise in median absolute percentage error
