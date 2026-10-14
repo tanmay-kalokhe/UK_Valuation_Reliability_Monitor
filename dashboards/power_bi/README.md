@@ -44,8 +44,8 @@
 4. **Reliability monitor**: *Where and when can the valuations be trusted?*
    - Matrix: local authority × month, showing Coverage with conditional formatting. Use the status colours with icons, never colour alone.
    - Table: alerts with their reasons.
-   - What-if slider: Max Interval Width, with cards for Automation Rate, Accepted Coverage and Accepted MdAPE.
-   - Line chart: Automation Rate vs Accepted Coverage across the slider range.
+   - What-if sliders: **LTV** and **Stress Cap**, with cards for Automation Rate, Accepted Coverage and Accepted MdAPE.
+   - Line chart: Automation Rate and Accepted Coverage across LTV values (LTV on the x-axis).
    - Map: alerts by local authority, using the **Shape map** visual with a custom TopoJSON of ONS local-authority boundaries (prepared in Week 4). Shape map avoids the Bing and Azure Maps sign-in settings.
 
 **Extras that show depth (optional):**
@@ -54,6 +54,6 @@
 - A bookmark-driven "About this report" panel.
 
 ## Skills this demonstrates
-Power Query typing and shaping, star-schema modelling with a snowflaked dimension, a DAX date table, time intelligence (`DATEADD`), `CALCULATE` with filter modification, a what-if parameter with variables, conditional formatting, drill-through and a custom theme.
+Power Query typing and shaping, star-schema modelling with a snowflaked dimension, a DAX date table, time intelligence (`DATEADD`), `CALCULATE` with filter modification, two what-if parameters driving an LTV-aware decision rule with variables, conditional formatting, drill-through and a custom theme.
 
 Microsoft's free PL-300 learning path on Microsoft Learn covers each of these if more practice is needed.

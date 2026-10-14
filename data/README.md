@@ -9,6 +9,11 @@ Nothing in `data/` except this file and the `.gitkeep` files is committed. Downl
 | `raw/house_price_index/` | UK House Price Index (HM Land Registry and ONS) | https://www.gov.uk/government/collections/uk-house-price-index-reports | Open Government Licence. Check the attribution wording on download. |
 | `raw/geography/` | Postcode-to-local-authority lookup (e.g. ONS Postcode Directory) | https://geoportal.statistics.gov.uk/ | Check the licence on the product page: it includes Royal Mail and Ordnance Survey terms. |
 
+## EPC: bulk CSV, not the API (decision D-014)
+- **Download:** sign in with GOV.UK One Login and download the **domestic** certificates as CSV. Choose per-local-authority files if offered; otherwise take the national file. DuckDB filters it to the study area on load, so the large file is not a problem.
+- **Recording:** note the download date in `docs/data_dictionary.md`. The snapshot stays fixed for the whole build, so results are reproducible.
+- **Coverage:** the service page says the data includes certificates registered since 2012. Sales whose only certificate is older will be unmatched. The match-bias analysis reports this rather than hiding it.
+
 ## Folder roles
 - `raw/`: files exactly as downloaded. Never edited by hand.
 - `interim/`: intermediate outputs, such as cleaned or partially matched extracts.

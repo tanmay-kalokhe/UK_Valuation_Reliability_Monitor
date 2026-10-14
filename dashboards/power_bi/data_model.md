@@ -24,7 +24,8 @@ A star schema (snowflaked for the area hierarchy) fed by Parquet files that `src
 | `covered` | True/False | Price fell inside the range |
 | `ape_model`, `ape_baseline` | Decimal | Absolute percentage error |
 | `interval_width_pct` | Decimal | (upper − lower) ÷ estimate |
-| `decision` | Text | `Accept` or `Refer` at the default threshold |
+| `lower_ratio` | Decimal | range_lower ÷ estimate_model; drives the LTV-aware decision |
+| `decision` | Text | `Accept` or `Refer` at the default LTV (75%) and stress cap (100%) |
 
 **`fact_monitoring`**: one row per local authority and month, produced by the Python monitor (the alert rule uses confidence intervals, which are computed in Python, not DAX).
 
@@ -113,24 +114,41 @@ Areas on Alert =
 CALCULATE ( DISTINCTCOUNT ( fact_monitoring[local_authority_code] ), fact_monitoring[alert] = TRUE () )
 ```
 
-### What-if parameter: accept-or-refer threshold
-Create it with Modeling → New parameter → Numeric range: name **Max Interval Width**, 0.05 to 0.50, increment 0.01, default 0.20. Power BI creates the table, the slicer and the measure `Max Interval Width Value`.
+### What-if parameters: the LTV-aware accept-or-refer rule
+**The rule (decision D-013).**
+- **Loan:** loan = LTV × estimate.
+- **Stressed LTV:** stressed LTV = loan ÷ the lower end of the price range. This is the LTV if the property turns out to be worth only the pessimistic value.
+- **Decision:** the valuation is **accepted** when the stressed LTV is at or below the **stress cap**, and **referred** to a surveyor otherwise.
+- **Single-column test:** algebraically, accept when `lower_ratio ≥ LTV ÷ stress cap`. This means the measures compare one column with a scalar.
+- **Effect:** a 60% LTV mortgage tolerates a wide price range, while a 95% LTV mortgage needs a very tight one.
+
+Create two parameters with Modeling → New parameter → Numeric range:
+- **LTV**: 0.50 to 0.95, increment 0.05, default 0.75.
+- **Stress Cap**: 0.90 to 1.00, increment 0.01, default 1.00 (no negative equity at the pessimistic value).
+
+Power BI creates the tables, slicers and the measures `LTV Value` and `Stress Cap Value`.
 
 ```dax
+Min Lower Ratio = DIVIDE ( [LTV Value], [Stress Cap Value] )
+
 Automation Rate =
-VAR MaxWidth = [Max Interval Width Value]
+VAR MinRatio = [Min Lower Ratio]
 RETURN
 DIVIDE (
-    CALCULATE ( [Test Sales], fact_sales[interval_width_pct] <= MaxWidth ),
+    CALCULATE ( [Test Sales], fact_sales[lower_ratio] >= MinRatio ),
     [Test Sales]
 )
 
 Accepted Coverage =
-VAR MaxWidth = [Max Interval Width Value]
-RETURN CALCULATE ( [Coverage], fact_sales[interval_width_pct] <= MaxWidth )
+VAR MinRatio = [Min Lower Ratio]
+RETURN CALCULATE ( [Coverage], fact_sales[lower_ratio] >= MinRatio )
 
 Accepted MdAPE =
-VAR MaxWidth = [Max Interval Width Value]
-RETURN CALCULATE ( [Model MdAPE], fact_sales[interval_width_pct] <= MaxWidth )
+VAR MinRatio = [Min Lower Ratio]
+RETURN CALCULATE ( [Model MdAPE], fact_sales[lower_ratio] >= MinRatio )
 ```
 The variable captures the slicer value before `CALCULATE` changes the filter context. That is a standard interview question on context transition.
+
+**Chart idea:** put the LTV parameter column on the x-axis of a line chart with `Automation Rate` and `Accepted Coverage`. Each point evaluates the measures at that LTV, which shows how automation falls as LTV rises.
+
+**Caveat to state on the report:** the stress cap and the defaults are illustrative design choices, not any lender's policy.
