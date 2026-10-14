@@ -5,6 +5,7 @@ git-ignored; this record lets anyone re-download and verify the same snapshot.
 
 | File | Group | Bytes | SHA-256 (first 16) | Downloaded (UTC) | Source |
 |---|---|---|---|---|---|
+| `data/raw/epc/domestic-csv.zip` | epc | 8,316,687,522 | `6aa14a64ae119b63…` | 2026-10-14 17:34 | https://get-energy-performance-data.communities.gov.uk/ |
 | `data/raw/geography/NSPCL_AUG26_UK_LU.zip` | postcode_lookup | 46,457,465 | `2fb442b1ee2acc2e…` | 2026-10-14 16:48 | https://www.arcgis.com/sharing/rest/content/items/bb61aafc3f0346e79f621c32fb2559d5/data |
 | `data/raw/geography/boundaries/lad_may2026_uk_bgc.geojson` | boundaries | 20,559,928 | `6b56f49bba86ec9e…` | 2026-10-14 16:48 | https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_May_2026_Boundaries_UK_BGC/FeatureServer/0 |
 | `data/raw/geography/boundaries/msoa_dec2021_ew_bgc.geojson` | boundaries | 43,349,822 | `f92b8777a04538ed…` | 2026-10-14 16:49 | https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V3/FeatureServer/0 |

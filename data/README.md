@@ -25,7 +25,10 @@ The URLs are in `config/project_config.yaml` under `sources`. Each run records f
 ## EPC: bulk CSV, not the API (decision D-014)
 - **Download:** sign in with GOV.UK One Login and download the **domestic** certificates as CSV. Choose per-local-authority files if offered; otherwise take the national file. DuckDB filters it to the study area on load, so the large file is not a problem.
 - **Recording:** note the download date in `docs/data_dictionary.md`. The snapshot stays fixed for the whole build, so results are reproducible.
-- **Coverage:** the service page says the data includes certificates registered since 2012. Sales whose only certificate is older will be unmatched. The match-bias analysis reports this rather than hiding it.
+- **What was downloaded (14 Oct 2026):** the national domestic file `domestic-csv.zip`, 8.3 GB zipped and about 98 GB unzipped. It holds `certificates-2008.csv` to `certificates-2026.csv` (93 columns, 27.5 GB) and `recommendations-*.csv` (not used).
+- **Coverage:** certificates lodged from 2008, despite the service page's wording about 2012. Sales of homes with no certificate since 2008 will be unmatched, and the match-bias analysis reports this.
+- **Filtering:** `python -m valuation_monitor.ingest epc` filters the certificates to study-area postcodes one year at a time. It never unpacks the whole archive and verifies each file's checksum as it reads. Output goes to `data/interim/epc_study_area/certificates-YYYY.parquet`.
+- **Useful columns:** `uprn` (a unique property reference, which identifies repeat certificates for the same home) and `transaction_type` (e.g. marketed sale).
 
 ## Folder roles
 - `raw/`: files exactly as downloaded. Never edited by hand.
