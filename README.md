@@ -61,5 +61,9 @@ Exact package versions are in `requirements-lock.txt`. Pre-commit checks block d
 | Streamlit, Plotly | Public interactive demo and maps |
 | pytest, ruff, sqlfluff, pre-commit, nbstripout | Tests and code quality |
 
+## Progress
+- **Week 1 (done):** staging tables in DuckDB and SQL address matching. **94.8%** of 256,677 standard sales (2020 to Aug 2026) were linked to an energy certificate lodged before the sale. The full report, including where matching falls short (Camden 80%, flats 87%), is in [`reports/match_quality.md`](reports/match_quality.md).
+- **Week 2 (next):** Splink vs SQL matching on 300 hand-checked pairs, then the baseline and models.
+
 ## Results
-_To be added once the build is complete._
+_Model results will be added from Week 2._

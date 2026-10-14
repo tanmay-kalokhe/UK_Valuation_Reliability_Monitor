@@ -12,12 +12,16 @@ A star schema (snowflaked for the area hierarchy) fed by Parquet files that `src
 |---|---|---|
 | `sale_key` | Whole number | Surrogate key, not the Land Registry transaction ID (which could be re-linked to an address) |
 | `sale_date` | Date | |
+| `area_key` | Text | `local_authority_code\|postcode_district`, e.g. `E08000035\|LS6`. A district can cross a local-authority boundary, so the district alone is not a unique key |
 | `postcode_district` | Text | e.g. `LS6`; the finest location level exported |
-| `property_type_code` | Text | D, S, T, F, O |
+| `property_type_code` | Text | D, S, T, F (Category A sales have no type O) |
 | `new_build` | True/False | |
 | `tenure` | Text | F (freehold) or L (leasehold) |
 | `price` | Whole number | £ |
 | `epc_matched` | True/False | Whether the sale was linked to an EPC certificate |
+| `match_status` | Text | `matched`, `no_address_match`, `certificates_only_after_sale`, `ambiguous`, `no_epc_at_postcode`, `no_postcode` |
+| `match_tier` | Whole number | 1 exact, 2 numbers and street, 3 named house, 4 named house with hamlet; blank if unmatched |
+| _Columns below arrive in Weeks 2 and 3_ | | |
 | `in_test_set` | True/False | Sales scored by the model in the time-based test period |
 | `estimate_model`, `estimate_baseline` | Whole number | £; blank outside the test set |
 | `range_lower`, `range_upper` | Whole number | £; the 90% price range |
@@ -43,15 +47,15 @@ A star schema (snowflaked for the area hierarchy) fed by Parquet files that `src
 | Table | Key | Other columns | Source |
 |---|---|---|---|
 | `dim_date` | `date` | year, month number, month name, year-month, month start | **Built in DAX** (see below) |
-| `dim_area` | `postcode_district` | `local_authority_code` | Export |
-| `dim_local_authority` | `local_authority_code` | `local_authority_name`, `region` | Export |
-| `dim_property_type` | `property_type_code` | `property_type_name` (Detached, Semi-detached, Terraced, Flat/Maisonette, Other), `sort_order` | Export |
+| `dim_area` | `area_key` | `postcode_district`, `local_authority_code` | Export |
+| `dim_local_authority` | `local_authority_code` | `local_authority_name`, `market`, `nation` | Export |
+| `dim_property_type` | `property_type_code` | `property_type_name` (Detached, Semi-detached, Terraced, Flat/Maisonette), `sort_order` | Export |
 
 ## Relationships (all many-to-one, single direction)
 | From | To |
 |---|---|
 | `fact_sales[sale_date]` | `dim_date[date]` |
-| `fact_sales[postcode_district]` | `dim_area[postcode_district]` |
+| `fact_sales[area_key]` | `dim_area[area_key]` |
 | `dim_area[local_authority_code]` | `dim_local_authority[local_authority_code]` |
 | `fact_sales[property_type_code]` | `dim_property_type[property_type_code]` |
 | `fact_monitoring[month_start]` | `dim_date[date]` |

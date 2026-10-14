@@ -11,6 +11,7 @@ The staging SQL lives in sql/01_staging/; this module only runs it in order.
 
 Usage:
     python -m valuation_monitor.ingest epc     # filter EPC certificates to the study area
+    python -m valuation_monitor.ingest stage   # build the staging tables (default)
 """
 
 import sys
@@ -21,6 +22,7 @@ from pathlib import Path
 import duckdb
 
 from valuation_monitor.config import PROJECT_ROOT, load_config
+from valuation_monitor.db import connect, run_sql_folder, sql_params
 from valuation_monitor.download import sha256, write_manifest
 
 
@@ -119,12 +121,31 @@ def record_epc_download(config: dict) -> None:
     )
 
 
+def run_staging(config: dict) -> None:
+    """Build the typed staging tables in the project database (sql/01_staging/)."""
+    params = sql_params(config)
+    params["postcode_lookup_csv"] = postcode_lookup_csv(config).as_posix()
+    with connect(config) as con:
+        run_sql_folder(con, "01_staging", params)
+        for table in [
+            "stg_postcode_lookup",
+            "stg_price_paid",
+            "stg_price_paid_changes",
+            "stg_epc",
+            "stg_hpi",
+        ]:
+            rows = con.execute(f"SELECT count(*) FROM {table}").fetchone()[0]
+            print(f"  {table}: {rows:,} rows")
+
+
 def main(tasks: list[str]) -> None:
     config = load_config()
-    for task in tasks or ["epc"]:
+    for task in tasks or ["stage"]:
         if task == "epc":
             record_epc_download(config)
             extract_epc_study_area(config)
+        elif task == "stage":
+            run_staging(config)
         else:
             raise SystemExit(f"Unknown task: {task}")
 
