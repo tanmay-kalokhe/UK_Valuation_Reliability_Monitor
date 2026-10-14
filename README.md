@@ -32,16 +32,34 @@ UK_Valuation_Reliability_Monitor/
 ## Build plan
 | Week | Deliverable |
 |---|---|
-| 1 | Load the data into DuckDB; SQL matching with match-rate and bias reporting; data dictionary; Power BI pages 1–2 |
-| 2 | Baseline vs LightGBM/CatBoost; time and local-authority holdouts; conformal intervals; coverage by area; Power BI page 3 |
-| 3 | Monthly replay with monitoring and alerts; Power BI page 4; Streamlit demo; results write-up |
+| 1 | Load the data into DuckDB; SQL address matching with match-rate and bias reporting; data dictionary; Power BI pages 1–2 |
+| 2 | Splink vs SQL matching on 300 hand-checked pairs; baseline vs LightGBM/CatBoost on time and local-authority holdouts, tracked in MLflow |
+| 3 | Conformal price ranges and coverage by area; monthly replay with monitoring and alerts; Power BI page 3 |
+| 4 | Maps (local authority and MSOA); Power BI page 4; hosted Streamlit demo; results write-up |
+
+**Study area:** Manchester, Trafford, Leeds, Milton Keynes, Camden, Cornwall and Cardiff. **Intended user:** a mortgage lender's valuation team.
 
 ## Setup
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python -m pip install -r requirements-dev.txt
+.venv\Scripts\python -m pip install -e .
+.venv\Scripts\pre-commit install
 .venv\Scripts\python -m pytest
 ```
+Exact package versions are in `requirements-lock.txt`. Pre-commit checks block data and `.pbix` files, lint Python (ruff) and SQL (sqlfluff), and strip notebook outputs before each commit.
+
+## Tools
+| Tool | Used for |
+|---|---|
+| DuckDB (Python and CLI) | All SQL: staging, matching, features, monitoring summaries |
+| Splink | Probabilistic record linkage, compared with SQL rules |
+| LightGBM, CatBoost, scikit-learn, MAPIE | Models and conformal price ranges |
+| SHAP | Per-valuation explanations |
+| MLflow | Experiment tracking (`mlflow ui`) |
+| Power BI Desktop | Four-page report (`dashboards/power_bi/`) |
+| Streamlit, Plotly | Public interactive demo and maps |
+| pytest, ruff, sqlfluff, pre-commit, nbstripout | Tests and code quality |
 
 ## Results
 _To be added once the build is complete._

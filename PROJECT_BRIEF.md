@@ -8,6 +8,8 @@ A property-valuation system for England and Wales that answers three questions a
 2. **How uncertain is that estimate?** The answer is a calibrated price range, for example "£212,000 to £248,000, which should contain the true price 9 times in 10".
 3. **Can the estimate be trusted in this area right now?** A reliability indicator, driven by monthly monitoring, recommends either accepting the automated valuation or referring the property to a surveyor.
 
+**Intended user:** a mortgage lender's valuation team. **Study area:** seven contrasting local authorities (Manchester, Trafford, Leeds, Milton Keynes, Camden, Cornwall and Cardiff).
+
 It is built on public data: HM Land Registry **Price Paid Data** (every residential sale), linked to **Energy Performance Certificate** records (floor area, energy rating, property age), with the **UK House Price Index** for the baseline.
 
 ## 2. The problem it focuses on
@@ -24,12 +26,14 @@ There is also a data problem underneath: the Land Registry and EPC datasets shar
 | Stage | What happens | Why it matters |
 |---|---|---|
 | **Data linkage (SQL)** | Sales are matched to EPC certificates in DuckDB SQL, using the latest certificate lodged before each sale. Unmatched records are reported and compared with matched ones. | It avoids leaking post-sale information, and it makes bias from missing data visible rather than hidden. |
+| **Matching comparison** | The SQL rules are compared with **Splink**, the UK Ministry of Justice's open-source probabilistic record-linkage library, judged on 300 hand-checked pairs. | It shows two professional approaches and measures their precision and recall rather than assuming one is better. |
 | **Modelling** | A simple baseline (district median adjusted by the House Price Index) is compared with LightGBM and CatBoost. | A machine-learning model has to beat a simple industry method to justify itself. |
 | **Uncertainty** | Conformal prediction produces price ranges with a stated coverage target (90%), checked by area, property type and month. | It gives honest ranges that can be tested, not just a confidence label. |
 | **Validation** | Time-based holdouts ("does it still work next month?") and local-authority holdouts ("does it work in an unseen area?"), with bootstrap confidence intervals. | It reflects real use rather than an optimistic random split. |
 | **Monitoring** | Past monthly releases are replayed in order. Error, coverage and data changes are tracked per area, and a retraining recommendation fires only when there are enough sales to be confident it is a real problem. | It shows the model being run as a living system, not a one-off notebook. |
 | **Reporting** | A four-page Power BI report (market, data quality, model performance, reliability), built by hand with Power Query, a star schema and DAX, including a what-if threshold. | It closes the Power BI gap honestly and speaks to analyst and BI audiences. |
-| **Decision and demo** | A Streamlit dashboard shows the value, the range, the main contributing factors and an accept-or-refer indicator. It also reports the trade-off between how many valuations are automated and how reliable they are. | It turns technical results into a business decision a non-specialist can act on. |
+| **Maps** | Maps of alerts by local authority and of error and coverage by small area (MSOA), in both Power BI and Streamlit, using open ONS boundaries. | Shows where a model fails at a glance; geospatial skills are valued in public-sector and property roles. |
+| **Decision and demo** | A publicly hosted Streamlit app shows the value, the range, the main contributing factors and an accept-or-refer indicator. It also reports the trade-off between how many valuations are automated and how reliable they are. | It turns technical results into a business decision a non-specialist can act on. |
 
 **Data ethics:** the public repository and demo contain no address-level data, because of the reuse terms attached to the Price Paid address fields and EPC records. Only code, aggregated results and charts are published.
 
@@ -67,7 +71,7 @@ A review of about 36 UK entry-level adverts in October 2026 (details in `D:\Job 
 - A finished, well-documented repository serves as a portfolio sample when bidding for such work.
 
 ## 6. Plan and success criteria
-Three weeks, as set out in `README.md`. The project counts as finished when:
+Four weeks, as set out in `README.md` (three for the core, plus one for the Splink comparison and maps). The project counts as finished when:
 - the match rate and any match bias are reported;
 - the model is compared honestly with the baseline on both holdouts;
 - interval coverage is reported by area, with confidence intervals;

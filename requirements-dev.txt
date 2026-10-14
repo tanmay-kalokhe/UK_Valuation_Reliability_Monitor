@@ -1,0 +1,11 @@
+# Development tools: testing, code and SQL quality, notebooks, commit safeguards.
+-r requirements.txt
+
+pytest
+pytest-cov
+ruff
+sqlfluff
+pre-commit
+nbstripout
+jupyterlab
+ipykernel

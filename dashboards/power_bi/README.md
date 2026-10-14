@@ -46,6 +46,7 @@
    - Table: alerts with their reasons.
    - What-if slider: Max Interval Width, with cards for Automation Rate, Accepted Coverage and Accepted MdAPE.
    - Line chart: Automation Rate vs Accepted Coverage across the slider range.
+   - Map: alerts by local authority, using the **Shape map** visual with a custom TopoJSON of ONS local-authority boundaries (prepared in Week 4). Shape map avoids the Bing and Azure Maps sign-in settings.
 
 **Extras that show depth (optional):**
 - A drill-through page from a local authority to its postcode districts.

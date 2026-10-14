@@ -36,3 +36,12 @@ dashboards/power_bi/data/**
 
 # Local working notes for AI assistants (mention account details; not for the public repository)
 CLAUDE.md
+
+# MLflow local tracking store and artefacts
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Coverage reports
+.coverage
+htmlcov/

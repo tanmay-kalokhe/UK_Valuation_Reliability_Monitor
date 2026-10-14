@@ -16,8 +16,16 @@ paths:
   figures: reports/figures
 
 study_area:
-  # Initial scope: 5 to 10 local authorities in England and Wales (PROVISIONAL list, chosen in Week 1).
-  local_authorities: []
+  # A contrasting mix of markets (decision D-008). Codes are PROVISIONAL until checked
+  # against the ONS lookup on download. All seven had unchanged boundaries from 2021.
+  local_authorities:
+    - { code: E08000003, name: Manchester, market: city centre and inner city }
+    - { code: E08000009, name: Trafford, market: affluent suburb }
+    - { code: E08000035, name: Leeds, market: large mixed city }
+    - { code: E06000042, name: Milton Keynes, market: commuter new town, many new builds }
+    - { code: E09000007, name: Camden, market: high-value London, mostly flats }
+    - { code: E06000052, name: Cornwall, market: rural and coastal, second homes }
+    - { code: W06000015, name: Cardiff, market: Welsh capital }
   start_date: "2021-01-01"
   end_date: null  # null means the latest available release
 
@@ -43,6 +51,20 @@ intervals:
 validation:
   time_split: rolling_origin_monthly
   geographic_holdout_unit: local_authority
+
+matching:
+  primary: sql_rules            # deterministic SQL address matching
+  comparison: splink            # probabilistic matching (Splink on DuckDB), compared on a hand-checked sample
+  hand_checked_sample_size: 300
+
+maps:
+  # Open ONS boundaries. Postcode-district boundaries are not available as open data.
+  alert_map_level: local_authority   # monthly alerts need enough sales per area
+  error_map_level: msoa              # error and coverage pooled over the whole test period
+
+demo:
+  hosting: streamlit_community_cloud
+  inputs: property characteristics and postcode district only (no address selection)
 
 monitoring:
   min_sales_per_area_month: 30   # PROVISIONAL
