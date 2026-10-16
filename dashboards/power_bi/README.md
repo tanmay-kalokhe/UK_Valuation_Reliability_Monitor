@@ -4,6 +4,8 @@
 
 **Honesty rule:** list Power BI on the CV only once this report is built and its screenshots are in the repository.
 
+**New to Power BI?** Follow [`step_by_step_guide.md`](step_by_step_guide.md). It gives click-by-click instructions for every phase, expected figures to check the model against, and a progress checklist. This page is the short summary.
+
 ## Setup (once)
 1. Install **Power BI Desktop** (free) from the Microsoft Store, which keeps it updated.
 2. Enable the project format: File → Options and settings → Options → Preview features → **Power BI Project (.pbip) save option** (if it is listed as a preview feature).

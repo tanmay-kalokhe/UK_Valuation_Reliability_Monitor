@@ -1,6 +1,6 @@
 # Data dictionary
 
-_Generated 14 October 2026 by `python -m valuation_monitor.data_dictionary` from the database schema. No example values are shown, so no address data appears here. Columns marked **Address field** never leave the local database._
+_Generated 16 October 2026 by `python -m valuation_monitor.data_dictionary` from the database schema. No example values are shown, so no address data appears here. Columns marked **Address field** never leave the local database._
 
 ## `stg_postcode_lookup`
 Source: ONS postcode to OA/LSOA/MSOA/LAD best-fit lookup, August 2026 · Grain: one study-area postcode (live or terminated) · Rows: 144,026 · Built by: `sql/01_staging/01_stg_postcode_lookup.sql`
@@ -182,3 +182,31 @@ Source: match_sales, match_property, link_sale_epc · Grain: one Category A sale
 | `certificate_number` | VARCHAR | 5.2% | 227,701 | Linked certificate (matched sales only) |
 | `days_before_sale` | BIGINT | 5.2% | 4,827 | Days between lodgement and sale (matched sales only) |
 | `match_status` | VARCHAR | 0.0% | 6 | matched, no_address_match, certificates_only_after_sale, ambiguous, no_epc_at_postcode or no_postcode |
+
+## `hand_check_sample`
+Source: match_outcome (stratified, deterministic draw; decision D-019) · Grain: one sale chosen for hand-checking · Rows: 300 · Built by: `src/valuation_monitor/match_review.py`
+
+| Column | Type | Null % | Distinct | Description |
+|---|---|---:|---:|---|
+| `review_id` | BIGINT | 0.0% | 300 | Row number on the labelling sheet (shuffled across strata) |
+| `transaction_id` | VARCHAR | 0.0% | 300 | Sale |
+| `stratum` | VARCHAR | 0.0% | 7 | SQL outcome the sale was drawn from (tier_1 to tier_4, ambiguous, no_address_match, certificates_only_after_sale) |
+| `stratum_population` | BIGINT | 0.0% | 7 | Sales in that stratum |
+| `stratum_sampled` | BIGINT | 0.0% | 5 | Sales drawn from that stratum |
+| `sample_weight` | DOUBLE | 0.0% | 7 | stratum_population / stratum_sampled; used to re-weight estimates |
+
+## `hand_check_candidates`
+Source: hand_check_sample, match_sales, match_epc, match_candidates · Grain: one candidate property shown for a hand-checked sale · Rows: 2,246 · Built by: `src/valuation_monitor/match_review.py`
+
+| Column | Type | Null % | Distinct | Description |
+|---|---|---:|---:|---|
+| `review_id` | BIGINT | 0.0% | 300 | Labelling-sheet row |
+| `candidate_number` | BIGINT | 0.0% | 8 | Sheet column (candidate_1 to candidate_8), in address order |
+| `property_key` | VARCHAR | 0.0% | 2,213 | Candidate property (UPRN, or postcode + address without one) |
+| `latest_certificate` | VARCHAR | 0.0% | 2,213 | Most recent certificate for the property; its address is shown |
+| `n_certificates` | BIGINT | 0.0% | 9 | Certificates lodged for the property |
+| `first_lodged` | DATE | 0.0% | 1,603 | Earliest lodgement date |
+| `last_lodged` | DATE | 0.0% | 1,609 | Latest lodgement date |
+| `passed_a_rule` | BOOLEAN | 0.0% | 2 | True if the SQL rules made this a candidate (hidden from the sheet) |
+| `similarity` | DOUBLE | 0.0% | 1,077 | Jaro-Winkler similarity of the normalised addresses |
+| `n_properties_at_postcode` | BIGINT | 0.0% | 70 | All properties with a certificate at the postcode |

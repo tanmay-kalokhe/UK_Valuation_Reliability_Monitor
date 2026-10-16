@@ -86,6 +86,20 @@ matching:
   primary: sql_rules            # deterministic SQL address matching
   comparison: splink            # probabilistic matching (Splink on DuckDB), compared on a hand-checked sample
   hand_checked_sample_size: 300
+  hand_check:
+    # Sales drawn per SQL outcome for hand-checking (decision D-019). Rare and uncertain
+    # outcomes are over-sampled; every estimate is re-weighted by stratum size.
+    # no_postcode and no_epc_at_postcode are excluded: there is no candidate to show.
+    strata:
+      tier_1: 40                         # exact address
+      tier_2: 70                         # same house/flat numbers and street
+      tier_3: 30                         # named house, similar name
+      tier_4: 30                         # named house, certificate adds the hamlet
+      ambiguous: 40                      # two or more properties tied
+      no_address_match: 80               # certificates at the postcode, none matched
+      certificates_only_after_sale: 10   # property matched, certificates all post-sale
+    max_candidates: 8                    # properties shown per sale on the labelling sheet
+    seed: 42
 
 maps:
   # Open ONS boundaries. Postcode-district boundaries are not available as open data.

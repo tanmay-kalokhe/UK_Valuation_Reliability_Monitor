@@ -207,6 +207,37 @@ TABLES = {
             "days_before_sale": "Days between lodgement and sale (matched sales only)",
         },
     },
+    "hand_check_sample": {
+        "source": "match_outcome (stratified, deterministic draw; decision D-019)",
+        "grain": "one sale chosen for hand-checking",
+        "built_by": "src/valuation_monitor/match_review.py",
+        "columns": {
+            "review_id": "Row number on the labelling sheet (shuffled across strata)",
+            "transaction_id": "Sale",
+            "stratum": "SQL outcome the sale was drawn from (tier_1 to tier_4, ambiguous, "
+            "no_address_match, certificates_only_after_sale)",
+            "stratum_population": "Sales in that stratum",
+            "stratum_sampled": "Sales drawn from that stratum",
+            "sample_weight": "stratum_population / stratum_sampled; used to re-weight estimates",
+        },
+    },
+    "hand_check_candidates": {
+        "source": "hand_check_sample, match_sales, match_epc, match_candidates",
+        "grain": "one candidate property shown for a hand-checked sale",
+        "built_by": "src/valuation_monitor/match_review.py",
+        "columns": {
+            "review_id": "Labelling-sheet row",
+            "candidate_number": "Sheet column (candidate_1 to candidate_8), in address order",
+            "property_key": "Candidate property (UPRN, or postcode + address without one)",
+            "latest_certificate": "Most recent certificate for the property; its address is shown",
+            "n_certificates": "Certificates lodged for the property",
+            "first_lodged": "Earliest lodgement date",
+            "last_lodged": "Latest lodgement date",
+            "passed_a_rule": "True if the SQL rules made this a candidate (hidden from the sheet)",
+            "similarity": "Jaro-Winkler similarity of the normalised addresses",
+            "n_properties_at_postcode": "All properties with a certificate at the postcode",
+        },
+    },
 }
 
 

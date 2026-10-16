@@ -20,7 +20,7 @@ A star schema (snowflaked for the area hierarchy) fed by Parquet files that `src
 | `price` | Whole number | £ |
 | `epc_matched` | True/False | Whether the sale was linked to an EPC certificate |
 | `match_status` | Text | `matched`, `no_address_match`, `certificates_only_after_sale`, `ambiguous`, `no_epc_at_postcode`, `no_postcode` |
-| `match_tier` | Whole number | 1 exact, 2 numbers and street, 3 named house, 4 named house with hamlet; blank if unmatched |
+| `match_tier` | Whole number | 1 exact, 2 numbers and street, 3 named house, 4 named house with hamlet; blank when no candidate passed a rule (ambiguous sales and sales with only post-sale certificates keep their tier) |
 | _Columns below arrive in Weeks 2 and 3_ | | |
 | `in_test_set` | True/False | Sales scored by the model in the time-based test period |
 | `estimate_model`, `estimate_baseline` | Whole number | £; blank outside the test set |
