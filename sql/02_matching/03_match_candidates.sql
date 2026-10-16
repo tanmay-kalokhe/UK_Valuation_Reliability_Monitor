@@ -1,6 +1,6 @@
 -- Inputs: match_sales, match_epc
 -- Output: match_candidates, every (sale, property) pair in the same postcode that passes
---         one of three rule tiers
+--         one of four rule tiers
 -- Assumptions (rule tiers, strongest first):
 --   1 exact          the normalised address lines are identical
 --   2 numbers_street identical non-empty identifier sets (house, flat and range numbers)

@@ -4,7 +4,7 @@
 
 This project estimates the value of homes in England and Wales, attaches a calibrated price range to each estimate, and monitors month by month whether the model remains reliable in each area. It recommends accepting the automated valuation or referring the property to a surveyor.
 
-> Status: setup complete; build not started. See `PROJECT_BRIEF.md` for the full rationale.
+> Status: Week 1 of 4 complete (data loaded and linked); Week 2 (matching comparison and models) next. See `PROJECT_BRIEF.md` for the full rationale.
 
 ## Data (public, not committed)
 - HM Land Registry Price Paid Data
@@ -40,13 +40,18 @@ UK_Valuation_Reliability_Monitor/
 **Study area:** Manchester, Trafford, Leeds, Milton Keynes, Camden, Cornwall and Cardiff. **Intended user:** a mortgage lender's valuation team.
 
 ## Setup
+Packages are installed into the main Python 3.12 interpreter (no virtual environment). One command does the whole setup and leaves any package the interpreter already has at its current version:
 ```powershell
-py -3.12 -m venv .venv
-.venv\Scripts\python -m pip install -r requirements-dev.txt
-.venv\Scripts\python -m pip install -e .
-.venv\Scripts\pre-commit install
-.venv\Scripts\python -m pytest
+powershell -ExecutionPolicy Bypass -File .\setup_local_env.ps1
 ```
+The equivalent manual steps:
+```powershell
+py -3.12 -m pip install -r requirements-dev.txt -c requirements-lock.txt
+py -3.12 -m pip install -e .
+py -3.12 -m pre_commit install
+py -3.12 -m pytest
+```
+Run project tools through the launcher, for example `py -3.12 -m streamlit run dashboards/streamlit/app.py`, `py -3.12 -m mlflow ui` and `py -3.12 -m jupyterlab`.
 Exact package versions are in `requirements-lock.txt`. Pre-commit checks block data and `.pbix` files, lint Python (ruff) and SQL (sqlfluff), and strip notebook outputs before each commit.
 
 ## Tools
@@ -56,7 +61,7 @@ Exact package versions are in `requirements-lock.txt`. Pre-commit checks block d
 | Splink | Probabilistic record linkage, compared with SQL rules |
 | LightGBM, CatBoost, scikit-learn, MAPIE | Models and conformal price ranges |
 | SHAP | Per-valuation explanations |
-| MLflow | Experiment tracking (`mlflow ui`) |
+| MLflow | Experiment tracking (`py -3.12 -m mlflow ui`) |
 | Power BI Desktop | Four-page report (`dashboards/power_bi/`) |
 | Streamlit, Plotly | Public interactive demo and maps |
 | pytest, ruff, sqlfluff, pre-commit, nbstripout | Tests and code quality |

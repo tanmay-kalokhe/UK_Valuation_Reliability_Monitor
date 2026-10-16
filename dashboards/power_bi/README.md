@@ -7,7 +7,7 @@
 ## Setup (once)
 1. Install **Power BI Desktop** (free) from the Microsoft Store, which keeps it updated.
 2. Enable the project format: File → Options and settings → Options → Preview features → **Power BI Project (.pbip) save option** (if it is listed as a preview feature).
-3. Run the export: `.venv\Scripts\python -m valuation_monitor.exports`. Parquet files appear in `dashboards/power_bi/data/`. The Week 1 export already supports pages 1 and 2.
+3. Run the export: `py -3.12 -m valuation_monitor.exports`. Parquet files appear in `dashboards/power_bi/data/`. The Week 1 export already supports pages 1 and 2.
 
 ## Build order: one page per project stage
 | When | Page | Needs |

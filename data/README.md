@@ -4,7 +4,7 @@ Nothing in `data/` except this file and the `.gitkeep` files is committed.
 
 **Download everything except EPC with one command** (re-runnable; finished files are skipped):
 ```powershell
-.venv\Scripts\python -m valuation_monitor.download
+py -3.12 -m valuation_monitor.download
 ```
 The URLs are in `config/project_config.yaml` under `sources`. Each run records file sizes, SHA-256 hashes and dates in `docs/data_downloads.md`, so the snapshot can be verified.
 
@@ -27,7 +27,7 @@ The URLs are in `config/project_config.yaml` under `sources`. Each run records f
 - **Recording:** note the download date in `docs/data_dictionary.md`. The snapshot stays fixed for the whole build, so results are reproducible.
 - **What was downloaded (14 Oct 2026):** the national domestic file `domestic-csv.zip`, 8.3 GB zipped and about 98 GB unzipped. It holds `certificates-2008.csv` to `certificates-2026.csv` (93 columns, 27.5 GB) and `recommendations-*.csv` (not used).
 - **Coverage:** certificates lodged from 2008, despite the service page's wording about 2012. Sales of homes with no certificate since 2008 will be unmatched, and the match-bias analysis reports this.
-- **Filtering:** `python -m valuation_monitor.ingest epc` filters the certificates to study-area postcodes one year at a time. It never unpacks the whole archive and verifies each file's checksum as it reads. Output goes to `data/interim/epc_study_area/certificates-YYYY.parquet`.
+- **Filtering:** `py -3.12 -m valuation_monitor.ingest epc` filters the certificates to study-area postcodes one year at a time. It never unpacks the whole archive and verifies each file's checksum as it reads. Output goes to `data/interim/epc_study_area/certificates-YYYY.parquet`.
 - **Useful columns:** `uprn` (a unique property reference, which identifies repeat certificates for the same home) and `transaction_type` (e.g. marketed sale).
 
 ## Folder roles

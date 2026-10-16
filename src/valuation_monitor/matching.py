@@ -2,7 +2,8 @@
 
 The rules live in sql/02_matching/:
 - addresses are normalised in SQL and compared only within the same postcode;
-- three rule tiers (exact, numbers + street, named house), strongest first;
+- four rule tiers (exact, numbers + street, similar house name, house name plus
+  hamlet), strongest first;
 - ties between properties are left unmatched (precision first);
 - each matched sale takes the latest certificate lodged on or before the sale date.
 

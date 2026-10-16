@@ -1,5 +1,7 @@
 # Python
 __pycache__/
+local_env_before.txt
+local_env_setup.log
 *.py[cod]
 .venv/
 .ipynb_checkpoints/

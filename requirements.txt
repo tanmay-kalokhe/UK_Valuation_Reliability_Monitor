@@ -1,6 +1,6 @@
 # Runtime dependencies. Python 3.12 is recommended: wheels for CatBoost, LightGBM and SHAP can lag behind newer releases.
-# Set up:  py -3.12 -m venv .venv
-#          .venv\Scripts\python -m pip install -r requirements-dev.txt
+# Set up:  powershell -ExecutionPolicy Bypass -File .\setup_local_env.ps1
+#          (installs into the main Python 3.12; no virtual environment)
 # The exact versions installed are recorded in requirements-lock.txt.
 
 # Data loading and SQL

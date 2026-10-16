@@ -1,5 +1,5 @@
 # Project brief: UK Valuation Reliability Monitor
-_Tanmay Kalokhe · prepared 14 October 2026 · status: setup complete, build not started_
+_Tanmay Kalokhe · prepared 14 October 2026 · status: Week 1 complete (data linkage); modelling not started_
 
 ## 1. What the project is
 A property-valuation system for England and Wales that answers three questions about any home, rather than returning a single predicted price:

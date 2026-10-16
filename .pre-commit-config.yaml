@@ -1,5 +1,5 @@
 # Checks that run automatically before every commit.
-# Install once:  .venv\Scripts\pre-commit install
+# Install once:  py -3.12 -m pre_commit install
 repos:
   - repo: local
     hooks:
