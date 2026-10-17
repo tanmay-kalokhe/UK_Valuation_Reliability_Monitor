@@ -22,7 +22,8 @@ A four-page report, one page per project stage, for the intended user: a mortgag
 
 ### What is ready now and what is not
 - **Ready now (Week 1 data):** pages 1 and 2. `fact_sales` already has the market columns and the match columns (`epc_matched`, `match_status`, `match_tier`).
-- **Later, after Week 2:** page 3 needs the model columns in `fact_sales` (`in_test_set`, `estimate_model`, `estimate_baseline`, `range_lower`, `range_upper`, `covered`, `ape_model`, `ape_baseline`, `interval_width_pct`, `lower_ratio`, `decision`).
+- **After Week 2 (ready once the export is re-run):** the accuracy part of page 3. `fact_sales` gains `in_test_set`, `estimate_model`, `estimate_baseline`, `ape_model` and `ape_baseline`.
+- **After Week 3:** the price-range columns (`range_lower`, `range_upper`, `covered`, `interval_width_pct`, `lower_ratio`, `decision`) for the coverage visual on page 3 and for page 4.
 - **Later, after Week 3:** page 4 needs the `fact_monitoring` table plus the model columns above.
 
 Do not try to build pages 3 and 4 yet: the columns do not exist, so the measures would fail. Phases 8 and 9 are marked accordingly.
@@ -512,14 +513,14 @@ Check these in order:
 
 ## 11. Phase 8 – Page 3 Model performance (after Week 2)
 
-> **Not yet possible.** The model columns in `fact_sales` arrive in Week 2. Re-run the export first (`py -3.12 -m valuation_monitor.exports`), then follow these steps.
+> **Partly possible after Week 2.** The accuracy columns (`in_test_set`, `estimate_model`, `estimate_baseline`, `ape_model`, `ape_baseline`) arrive in Week 2: build the Model measures, Visual A and Visual C now. The coverage measures and Visual B need the price-range columns from Week 3. Re-run the export first (`py -3.12 -m valuation_monitor.exports`).
 
 Page question: *Does the model beat the simple baseline, and are its ranges honest?*
 
 ### 11.1 Refresh
 1. Re-run the export (Phase 1) and check that `fact_sales.parquet` now has the model columns.
 2. In Power BI, click **Home → Refresh**.
-3. In **Power Query** (**Home → Transform data**), set the new column types: `in_test_set` and `covered` True/False; `estimate_model`, `estimate_baseline`, `range_lower`, `range_upper` Whole Number; `ape_model`, `ape_baseline`, `interval_width_pct`, `lower_ratio` Decimal Number; `decision` Text. Close & Apply.
+3. In **Power Query** (**Home → Transform data**), set the new column types. Week 2: `in_test_set` True/False; `estimate_model`, `estimate_baseline` Whole Number; `ape_model`, `ape_baseline` Decimal Number. Week 3 adds: `covered` True/False; `range_lower`, `range_upper` Whole Number; `interval_width_pct`, `lower_ratio` Decimal Number; `decision` Text. Close & Apply.
 4. Duplicate a template page and name it `3 Model performance`. Replace the title with the page question.
 
 ### 11.2 Measures

@@ -36,6 +36,14 @@ def sql_params(config: dict) -> dict[str, str]:
     """Values substituted for ${name} placeholders in SQL files (forward-slash paths)."""
     params = {key: (PROJECT_ROOT / value).as_posix() for key, value in config["paths"].items()}
     params["start_date"] = str(config["study_area"]["start_date"])
+    features = config["features"]
+    params["info_lag_months"] = str(int(features["info_lag_months"]))
+    params["history_window_months"] = str(int(features["history_window_months"]))
+    params["min_comparables"] = str(int(features["min_comparables"]))
+    params["floor_area_min"], params["floor_area_max"] = (
+        str(float(x)) for x in features["floor_area_range"]
+    )
+    params.update({key: str(value) for key, value in config["validation"]["periods"].items()})
     return params
 
 

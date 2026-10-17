@@ -42,7 +42,32 @@ EXPORTS = {
             ('F', 'Flat/Maisonette', 4)
         ) AS t(property_type_code, property_type_name, sort_order)
     """,
+    # Model columns: the time-split test period, for the model chosen on the calibration period
+    # (as in reports/model_performance.md). Sales outside the test period have no estimate.
     "fact_sales": """
+        WITH selected AS (
+            SELECT p.estimator
+            FROM model_predictions AS p
+            INNER JOIN model_input AS m ON p.transaction_id = m.transaction_id
+            WHERE p.split = 'time' AND m.period = 'calibration' AND p.estimator <> 'baseline'
+            GROUP BY p.estimator
+            ORDER BY MEDIAN(ABS(p.estimate / m.price - 1))
+            LIMIT 1
+        ),
+
+        test AS (
+            SELECT
+                p.transaction_id,
+                MAX(p.estimate) FILTER (
+                    WHERE p.estimator = (SELECT estimator FROM selected)
+                ) AS estimate_model,
+                MAX(p.estimate) FILTER (WHERE p.estimator = 'baseline') AS estimate_baseline
+            FROM model_predictions AS p
+            INNER JOIN model_input AS m ON p.transaction_id = m.transaction_id
+            WHERE p.split = 'time' AND m.period = 'test'
+            GROUP BY p.transaction_id
+        )
+
         SELECT
             ROW_NUMBER() OVER (ORDER BY s.sale_date, s.transaction_id) AS sale_key,
             s.sale_date,
@@ -54,9 +79,15 @@ EXPORTS = {
             s.price,
             o.match_status = 'matched' AS epc_matched,
             o.match_status,
-            o.match_tier
+            o.match_tier,
+            t.transaction_id IS NOT NULL AS in_test_set,
+            CAST(ROUND(t.estimate_model) AS BIGINT) AS estimate_model,
+            CAST(ROUND(t.estimate_baseline) AS BIGINT) AS estimate_baseline,
+            ABS(t.estimate_model - s.price) / s.price AS ape_model,
+            ABS(t.estimate_baseline - s.price) / s.price AS ape_baseline
         FROM match_sales AS s
         INNER JOIN match_outcome AS o ON s.transaction_id = o.transaction_id
+        LEFT JOIN test AS t ON s.transaction_id = t.transaction_id
         WHERE s.postcode_district IS NOT NULL
     """,
 }

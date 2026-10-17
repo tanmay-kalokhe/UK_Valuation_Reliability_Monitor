@@ -78,8 +78,25 @@ intervals:
   method: conformalised_quantile_regression  # alternatives: split_conformal, mondrian_conformal
   target_coverage: 0.90
 
+features:
+  # Information cut-off (decision D-022): a valuation may use sales completed, and HPI months,
+  # before the first day of (sale month - info_lag_months). This allows for the months between
+  # agreeing a price and completion, and for Land Registry's registration lag.
+  info_lag_months: 3
+  history_window_months: 12      # comparable sales window ending at the cut-off
+  min_comparables: 5             # below this, the district estimate falls back to the local authority
+  floor_area_range: [15, 1000]   # m²; certificate floor areas outside this are treated as missing
+
 validation:
-  time_split: rolling_origin_monthly
+  # Periods (decision D-020). 2020 is history only: used for features, never scored.
+  periods:
+    train_start: "2021-01-01"
+    calibration_start: "2025-03-01"
+    test_start: "2025-09-01"
+    test_end: "2026-08-31"
+  early_stopping_months: 3       # last training months held out for early stopping only
+  bootstrap_resamples: 1000
+  monthly_replay: rolling_origin_monthly   # Week 3
   geographic_holdout_unit: local_authority
 
 matching:
@@ -99,6 +116,12 @@ matching:
       no_address_match: 80               # certificates at the postcode, none matched
       certificates_only_after_sale: 10   # property matched, certificates all post-sale
     max_candidates: 8                    # properties shown per sale on the labelling sheet
+    seed: 42
+  splink:
+    # Probabilistic matching (Splink 5 on DuckDB), blocked on postcode like the SQL rules.
+    match_threshold: 0.9                 # PROVISIONAL: re-chosen from the hand-checked labels
+    u_max_pairs: 5000000                 # random pairs used to estimate u probabilities
+    exact_match_recall: 0.6              # assumed share of true links with an identical address
     seed: 42
 
 maps:

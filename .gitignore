@@ -39,7 +39,8 @@ dashboards/power_bi/data/**
 # Local working notes for AI assistants (mention account details; not for the public repository)
 CLAUDE.md
 
-# MLflow local tracking store and artefacts
+# MLflow local tracking store and artefacts; CatBoost training logs
+catboost_info/
 mlruns/
 mlartifacts/
 mlflow.db
